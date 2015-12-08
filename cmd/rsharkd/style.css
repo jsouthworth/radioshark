@@ -1,0 +1,12 @@
+* {
+    font-size: 18pt;
+    font-family: monospace;
+}
+input {
+    height 48px;
+    width:  200px;
+    padding: 10px 20px;
+}
+#status {
+    color: #cccccc;
+}

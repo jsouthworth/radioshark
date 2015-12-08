@@ -1,97 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-	<meta charset="utf-8">
-	<title>RadioShark</title>
-	<style>
-	  * {
-        font-size: 18pt;
-	    font-family: monospace;
-	  }
-	  input {
-	    height 48px;
-	    width:  200px;
-	    padding: 10px 20px;
-	  }
-	  #status {
-	    color: #cccccc;
-	  }
-	</style>
-	<script type="text/javascript">
-	  var url =  window.location.protocol + "//" + window.location.host
-	  var applyurl = url + "/config/apply"
-	  var geturl = url + "/config/get"
-	  function handleResponse(fn) {
-	    return function(ev) {
-	      if (this.status != 200) {
-	        try {
-	          var obj = JSON.parse(this.responseText)
-	          setStatusText(obj["error"], "#ff0000")
-	        } catch(exp) {
-	          setStatusText(this.responseText, "#ff0000")
-	        }
-	      } else {
-	        if (fn != null) {
-	          fn(this)
-	        }
-	      }
-	    }
-	  }
-	  function updateForm(resp) {
-	    console.log(resp.responseText);
-	    var obj = JSON.parse(resp.responseText)
-	    if (obj["modulation"] == "AM" || obj["modulation"] == "am") {
-	      document.getElementById("AM").checked = true
-	    } else if (obj["modulation"] == "FM" || obj["modulation"] == "fm") {
-          document.getElementById("FM").checked = true
-	    }
-	    document.getElementById("frequency").value = obj["frequency"]
-	    setStatusText("OK", "#00ff00")
-	  }
-	  function setStatusText(text, color) {
-	    var status = document.getElementById("status")
-	    status.innerHTML = text
-	    status.style.color = color
-	  }
-	  document.addEventListener('DOMContentLoaded', function(){
-        var req = new XMLHttpRequest()
-	    req.addEventListener("load", handleResponse(updateForm))
-	    req.addEventListener("error", handleResponse())
-	    req.open("GET", geturl)
-	    req.send()
-	  });
-	  function apply() {
-	    var FD = new FormData()
-	    if (document.getElementById("AM").checked) {
-	      FD.append("modulation", "AM")
-	    } else if (document.getElementById("FM").checked) {
-	      FD.append("modulation", "FM")
-	    }
-	    FD.append("frequency", document.getElementById("frequency").value)
-	    var req = new XMLHttpRequest()
-	    req.open("POST", applyurl)
-	    req.send(FD)
-        req.addEventListener("error", handleResponse())
-	    req.addEventListener("load", handleResponse(function(ev){
-	      setStatusText("OK", "#00ff00")
-	    }))
-	  }
-	</script>
+    <meta charset="utf-8">
+    <title>RadioShark</title>
+    <link href="style.css" rel="stylesheet">
+    <script type="text/javascript" src="script.js"></script>
   </head>
   <body>
-	<div id="form1">
-	  <label for="frequency">Frequency:</label><br/>
-	  <input id="frequency" name="frequency">
-	  <br/><br/>
-	  <label for="modulation">Modulation:</label><br/>
-	  <label for="AM">AM</label>
-	  <input id="AM" name="modulation" type="radio" value="AM"><br/>
-	  <label for="FM">FM</label>
-	  <input id="FM" name="modulation" type="radio" value="FM">
-	  <br/><br/>
-	  <input type="button" value="Apply" onclick="apply()">
-	</div>
-	<p>Status:</p>
-	<p id="status">Waiting...</p>
+    <div id="form1">
+      <label for="frequency">Frequency:</label><br/>
+      <input id="frequency" name="frequency">
+      <br/><br/>
+      <label for="modulation">Modulation:</label><br/>
+      <label for="AM">AM</label>
+      <input id="AM" name="modulation" type="radio" value="AM"><br/>
+      <label for="FM">FM</label>
+      <input id="FM" name="modulation" type="radio" value="FM">
+      <br/><br/>
+      <input type="button" value="Apply" onclick="apply()">
+    </div>
+    <p>Status:</p>
+    <p id="status">Waiting...</p>
+    <div id="stream"></div>
   </body>
 </html>
