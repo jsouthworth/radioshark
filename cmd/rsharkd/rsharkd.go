@@ -318,6 +318,7 @@ func parseFlags() error {
 
 func main() {
 	die(parseFlags())
+	exec.Command("modprobe", "-r", "radio_shark").Run()
 	mux, err := NewHTTPServeMux(configfile, shark, "/config")
 	die(err)
 	mux.Handle("/", http.FileServer(http.Dir(root)))
